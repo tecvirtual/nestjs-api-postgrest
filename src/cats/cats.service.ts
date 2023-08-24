@@ -7,29 +7,29 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CatsService {
-
   constructor(
     @InjectRepository(Cat)
-    private readonly catRepository: Repository<Cat>
-  ){}
+    private readonly catsRepository: Repository<Cat>,
+  ) {}
 
   async create(createCatDto: CreateCatDto) {
-    return this.catRepository.find();
+    //const cat = this.catsRepository.create(createCatDto);
+    return await this.catsRepository.save(createCatDto);
   }
 
   async findAll() {
-    return await this.catRepository.find();
+    return await this.catsRepository.find();
   }
 
   async findOne(id: number) {
-    return `This action returns a #${id} cat`;
+    return await this.catsRepository.findOneBy({ id });
   }
 
   async update(id: number, updateCatDto: UpdateCatDto) {
-    return `This action updates a #${id} cat`;
+    return await this.catsRepository.update(id, updateCatDto);
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} cat`;
+    return await this.catsRepository.softDelete(id);
   }
 }
