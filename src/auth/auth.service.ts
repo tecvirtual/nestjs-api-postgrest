@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import * as bcryptjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +27,8 @@ export class AuthService {
     });
   }
 
-  async login({ email, password }: RegisterDto) {
-    const user = await this.usersService.findOneByEmail(email);
+  async login({ email, password }: LoginDto) {
+    const user = await this.usersService.findOneByEmailWithPassword(email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -35,7 +36,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Invalid password');
     }
-    const payload = { email: user.email };
+    const payload = { email: user.email, role: user.role };
 
     const token = this.jwtService.sign(payload);
     return { token, email };
