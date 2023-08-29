@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
+import { Role } from "../enums/role.enum";
 
-export const Roles = (role) => SetMetadata('roles', role);
+export const ROLES_KEY = "roles";
+export const Roles = (role: Role) => SetMetadata(ROLES_KEY, role);

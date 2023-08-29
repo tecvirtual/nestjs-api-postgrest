@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
     // El objeto context proporciona información
     // sobre la solicitud entrante y el entorno de ejecución.
     const request = context.switchToHttp().getRequest();
-    console.log(request.headers.authorization);
 
     // Aquí puedes implementar tu lógica de autenticación o autorización.
     // Por ejemplo, verificar si el usuario está autenticado, si tiene los roles adecuados, etc.
