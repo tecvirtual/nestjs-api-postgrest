@@ -13,32 +13,30 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // El objeto context proporciona información
-    // sobre la solicitud entrante y el entorno de ejecución.
     const request = context.switchToHttp().getRequest();
-
-    // Aquí puedes implementar tu lógica de autenticación o autorización.
-    // Por ejemplo, verificar si el usuario está autenticado, si tiene los roles adecuados, etc.
-
-    // Si la validación es exitosa, devuelve true, permitiendo el acceso.
-    // Si la validación falla, devuelve false, denegando el acceso.
-
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException('No token');
     }
 
     try {
-      const payload = this.jwtService.verifyAsync(token, {
-        //secret: process.env.JWT_SECRET
+      const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
+
+      // Verificar si el token ha expirado
+      if (payload.exp * 1000 < Date.now()) {
+        throw new UnauthorizedException('Token expired');
+      }
+
       request.user = payload;
     } catch (error) {
+      console.log(error);
       throw new UnauthorizedException('Invalid token');
     }
 
-    return true; // o false, dependiendo de la lógica de tu guard.
+    return true;
   }
 
   private extractTokenFromHeader(request: Request) {
