@@ -58,14 +58,7 @@ export class CatsService {
     updateCatDto: UpdateCatDto,
     user: UserActiveInterface,
   ) {
-    const cat = await this.catsRepository.findOneBy({ id });
-
-    if (!cat) {
-      throw new BadRequestException('Cat not found');
-    }
-
-    this.validateOwnership(cat, user);
-
+    await this.findOne(id, user);
     return await this.catsRepository.update(id, {
       ...updateCatDto,
       breed: updateCatDto.breed
